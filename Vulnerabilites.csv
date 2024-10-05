@@ -1,0 +1,13 @@
+,,,,
+Vulnerability name,,Attack name,,Description
+1. CVE 2011- 4954,,Improper Privilege Management,,cobbler has local privilege escalation via the use of insecure location for PYTHON_EGG_CACHE
+2. CVE 2014 - 7143,, Exposure of Resource to Wrong Sphere,,2. CVE 2014 - 7143-docutils allows insecure usage of temporary files
+CVE-2019-18874,,Double Free,,"psutil (aka python-psutil) through 5.6.5 can have a double free. This occurs because of refcount mishandling within a while or for loop that converts system data into a Python object.
+"
+CVE-2019-12410,,NULL Pointer Dereference,,"While investigating UBSAN errors in https://github.com/apache/arrow/pull/5365 it was discovered Apache Arrow versions 0.12.0 to 0.14.1, left memory Array data uninitialized when reading RLE null data from parquet. This affected the C++, Python, Ruby and R implementations. The uninitialized memory could potentially be shared if are transmitted over the wire (for instance with Flight) or persisted in the streaming IPC and file formats."
+CVE-2009-5042,,Exposure of Resource to Wrong Sphere,,python-docutils allows insecure usage of temporary files
+CVE-2019-5010,,NULL Pointer Dereference,,"An exploitable denial-of-service vulnerability exists in the X509 certificate parser of Python.org Python 2.7.11 / 3.6.6. A specially crafted X509 certificate can cause a NULL pointer dereference, resulting in a denial of service. An attacker can initiate or accept TLS connections using crafted certificates to trigger this vulnerability."
+CVE-2013-5123,,Improper Authentication,,"The mirroring support (-M, --use-mirrors) in Python Pip before 1.5 uses insecure DNS querying and authenticity checks which allows attackers to perform man-in-the-middle attacks."
+CVE-2013-4409,,Improper Input Validation,,An eval() vulnerability exists in Python Software Foundation Djblets 0.7.21 and Beanbag Review Board before 1.7.15 when parsing JSON requests.
+CVE-2013-4367,,Incorrect Permission Assignment for Critical Resource,,ovirt-engine 3.2 running on Linux kernel 3.1 and newer creates certain files world-writeable due to an upstream kernel change which impacted how python's os.chmod() works when passed a mode of '-1'.
+CVE-2012-5577,,Incorrect Default Permissions,,Python keyring lib before 0.10 created keyring files with world-readable permissions.
