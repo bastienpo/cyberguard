@@ -1,0 +1,11 @@
+[project]
+name = "cyberguard"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "llama-index-llms-fireworks>=0.2.1",
+    "llama-index>=0.11.16",
+    "streamlit>=1.39.0",
+]
