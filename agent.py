@@ -67,6 +67,8 @@ class CyberWorkflow(Workflow):
     llm = Fireworks(
         model="accounts/fireworks/models/llama-v3p1-70b-instruct",
         api_key=FIREWORK_API_KEY,
+        max_tokens=4096,
+        temperature=0.8,
     )
 
     # Create the agent
