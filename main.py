@@ -1,8 +1,8 @@
 import streamlit as st
-from agent import create_agent
+from agent import run_workflow
 
 
-def build_ui(agent):
+def build_ui():
     st.title("CyberGuard")
 
     if "messages" not in st.session_state:
@@ -16,7 +16,7 @@ def build_ui(agent):
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-        response = agent.chat(prompt)
+        response = run_workflow(prompt)
 
         with st.chat_message("assistant"):
             st.markdown(response)
@@ -25,6 +25,4 @@ def build_ui(agent):
 
 
 if __name__ == "__main__":
-    llm = create_agent()
-    
-    build_ui(llm)
+    build_ui()
