@@ -4,23 +4,39 @@ from llama_index.llms.fireworks import Fireworks
 import os
 from e2b_code_interpreter import CodeInterpreter
 from llama_index.core.tools import FunctionTool
-from llama_index.core.workflow import Context
 from llama_index.core.agent import ReActAgent
-
+from llama_index.core import VectorStoreIndex
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.vector_stores.qdrant import QdrantVectorStore
+from llama_index.embeddings.fastembed import FastEmbedEmbedding
 from llama_index.core.workflow import (
-    Event,
     StartEvent,
     StopEvent,
     Workflow,
     step,
 )
 
+from llama_index.core.workflow import (
+    Event,
+)
+
+from llama_index.core import Settings
 
 # Load environment variables
 load_dotenv()
 
 FIREWORK_API_KEY = os.getenv("FIREWORK_API_KEY")
 E2B_API_KEY = os.getenv("E2B_API_KEY")
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
+QDRANT_URL = os.getenv("QDRANT_URL")
+
+Settings.embed_model = FastEmbedEmbedding(model_name="BAAI/bge-base-en-v1.5")
+Settings.llm = Fireworks(
+    model="accounts/fireworks/models/llama-v3p1-70b-instruct",
+    api_key=FIREWORK_API_KEY,
+    max_tokens=4096,
+    temperature=0.8,
+)
 
 
 def code_interpret_tool(code: str):
@@ -39,10 +55,39 @@ def code_interpret_tool(code: str):
         return exec.results
 
 
-tool = FunctionTool.from_defaults(
+def create_rag_tool() -> FunctionTool:
+    """Create a RAG tool.
+
+    Args:
+        collection_name: The name of the collection to create the RAG tool for.
+
+    Returns:
+        FunctionTool: The RAG tool.
+    """
+    vector_store = QdrantVectorStore(
+        collection_name="weakness",
+        url=QDRANT_URL,
+        api_key=QDRANT_API_KEY,
+    )
+
+    index = VectorStoreIndex.from_vector_store(vector_store)
+
+    query_engine = RetrieverQueryEngine(
+        retriever=index.as_retriever(),
+    )
+
+    return FunctionTool.from_defaults(
+        fn=query_engine.query,
+        name="rag_tool",
+        description=("Retrieve information about vulnerabilities."),
+    )
+
+
+code_tool = FunctionTool.from_defaults(
     fn=code_interpret_tool,
     description="Run python code in a sandboxed interpreter to test and fix vulnerabilities.",
 )
+rag_tool = create_rag_tool()
 
 
 class VulnerabilityEvent(Event):
@@ -73,7 +118,7 @@ class CyberWorkflow(Workflow):
 
     # Create the agent
     react_agent = ReActAgent.from_tools(
-        [tool], llm=llm, verbose=True, max_iterations=25
+        [code_tool, rag_tool], llm=llm, verbose=True, max_iterations=25
     )
 
     @step
@@ -81,8 +126,6 @@ class CyberWorkflow(Workflow):
         """
         Identify potential vulnerabilities in the code.
         """
-        vulnerabilities = await self.llm.acomplete(event.prompt)
-
         vulnerability_template = """You are a cybersecurity expert. Analyze the following code and identify potential vulnerabilities. 
 
         For each vulnerability, provide a description and a code snippet that demonstrates the vulnerability.
@@ -113,7 +156,12 @@ class CyberWorkflow(Workflow):
     async def fix_vulnerabilities(
         self, event: VulnerabilityEvent
     ) -> FixVulnerabilityEvent:
-        fix_template = """Fix the code vulnerabilities and return **only** the fixed code.        
+        fix_template = """Fix the code vulnerabilities and return **only** the fixed code.
+
+        Retrieve information about vulnerabilities.
+
+        Run the code and to ensure that the code is working.
+
         Identified vulnerabilities:
         {vulnerabilities}
 
@@ -123,8 +171,8 @@ class CyberWorkflow(Workflow):
 
         fix_prompt = PromptTemplate(fix_template)
 
-        fixed_code = await self.llm.acomplete(
-            fix_prompt.format(query=event.prompt, vulnerabilities=event.vulnerabilities)
+        fixed_code = await self.react_agent.achat(
+            fix_prompt.format(vulnerabilities=event.vulnerabilities, query=event.prompt)
         )
 
         return FixVulnerabilityEvent(
@@ -147,7 +195,7 @@ class CyberWorkflow(Workflow):
         Vulnerabilities:
         {vulnerabilities}
 
-        Run the test case and output the results of the test cases in markdown table format with ✅ if the test case passes or ❌ if it fails or unable to run and the code that was run.
+        Run the test case and output the results of the test cases in markdown table format with OK if the test case passes or KO if it fails or unable to run and the code that was run.
         """
 
         test_prompt = PromptTemplate(test_template)
