@@ -1,8 +1,9 @@
 import streamlit as st
-from agent import run_workflow
+from agent import CyberWorkflow
+import asyncio
 
 
-def build_ui():
+async def build_ui():
     st.title("CyberGuard")
 
     if "messages" not in st.session_state:
@@ -16,7 +17,10 @@ def build_ui():
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
 
-        response = run_workflow(prompt)
+        workflow = CyberWorkflow(timeout=60)
+        response = await workflow.run(prompt=prompt)
+
+        # response = run_workflow(prompt)
 
         with st.chat_message("assistant"):
             st.markdown(response)
@@ -24,5 +28,9 @@ def build_ui():
         st.session_state.messages.append({"role": "assistant", "content": response})
 
 
+async def main():
+    await build_ui()
+
+
 if __name__ == "__main__":
-    build_ui()
+    asyncio.run(main())
