@@ -46,6 +46,36 @@ Upon running the application, you'll be presented with the CyberGuard UI.
 
 4. View Results: Review the vulnerabilities detected, the fixes applied, and the results of the tests to ensure your code is secure and functional.
 
+## Example vulnerable code
+
+1. Buffer overflow
+
+   void vulnerable_function(char *input) {
+    char buffer[10];
+    strcpy(buffer, input);  // Unsafe copy
+}
+
+2. Race condition
+
+   import threading
+
+shared_resource = 0
+
+def increment():
+    global shared_resource
+    for _ in range(100000):
+        shared_resource += 1
+
+thread1 = threading.Thread(target=increment)
+thread2 = threading.Thread(target=increment)
+
+thread1.start()
+thread2.start()
+thread1.join()
+thread2.join()
+
+print(shared_resource)  # May not be as expected due to race conditions
+
 
 ## Author
 
