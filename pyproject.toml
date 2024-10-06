@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "e2b-code-interpreter>=0.0.10",
+    "llama-index-agent-lats>=0.2.1",
     "llama-index-embeddings-fastembed>=0.2.0",
     "llama-index-llms-fireworks>=0.2.1",
     "llama-index-utils-workflow>=0.2.1",

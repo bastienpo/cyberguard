@@ -243,6 +243,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "e2b-code-interpreter" },
     { name = "llama-index" },
+    { name = "llama-index-agent-lats" },
     { name = "llama-index-embeddings-fastembed" },
     { name = "llama-index-llms-fireworks" },
     { name = "llama-index-utils-workflow" },
@@ -255,6 +256,7 @@ dependencies = [
 requires-dist = [
     { name = "e2b-code-interpreter", specifier = ">=0.0.10" },
     { name = "llama-index", specifier = ">=0.11.16" },
+    { name = "llama-index-agent-lats", specifier = ">=0.2.1" },
     { name = "llama-index-embeddings-fastembed", specifier = ">=0.2.0" },
     { name = "llama-index-llms-fireworks", specifier = ">=0.2.1" },
     { name = "llama-index-utils-workflow", specifier = ">=0.2.1" },
@@ -811,6 +813,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/fc/50/57f37cdc4c99b2f9bd269e652824672480cbb7be19ec5c3a8a54f1407ded/llama_index-0.11.16.tar.gz", hash = "sha256:8baa26d3939c1f0a798a95013e70fba8297cfbd564fafc15431c2fc1b142086b", size = 7775 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9d/e2/b83595e24c4a78312251b7cd36fcb0b10df9e515c9a7979e50a7aa62ac91/llama_index-0.11.16-py3-none-any.whl", hash = "sha256:de10b9381ce43e08ba04be01b83ac679ed2eb180a8a858b00eca4fcabbe66fb6", size = 6808 },
+]
+
+[[package]]
+name = "llama-index-agent-lats"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "llama-index-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f2/74/53237b9d7bb222c388f15cca4b08b661caeeb10b5ee15f0ee2453dcac79c/llama_index_agent_lats-0.2.1.tar.gz", hash = "sha256:dd4b0cbe5ad905f86976aa15402fe357e74d67fedd6c5efb1cb94569f44bd7bd", size = 5809 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/aa/9d1f13b4788a120a1191202faaa97db062ccca26c36368a97edd6ec9168d/llama_index_agent_lats-0.2.1-py3-none-any.whl", hash = "sha256:707d441ee49af9697cd1f2ff401cb1ec2b459923017ad471e0fb44d5ca7d16c5", size = 6462 },
 ]
 
 [[package]]
